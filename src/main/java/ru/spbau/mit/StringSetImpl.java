@@ -25,7 +25,7 @@ public class StringSetImpl implements StringSet {
             if (Character.isLowerCase(str.charAt(index))) {
                 nextSymbol = str.charAt(index) - 'a';
             } else {
-                nextSymbol = str.charAt(index) - 'A';
+                nextSymbol = str.charAt(index) - 'A' + ALPHABET_SIZE / 2;
             }
             if (nd.symbolPointers[nextSymbol] == null) {
                 nd.symbolPointers[nextSymbol] = new Node();
@@ -53,7 +53,7 @@ public class StringSetImpl implements StringSet {
             if (Character.isLowerCase(str.charAt(index))) {
                 nextSymbol = str.charAt(index) - 'a';
             } else {
-                nextSymbol = str.charAt(index) - 'A';
+                nextSymbol = str.charAt(index) - 'A' + ALPHABET_SIZE / 2;
             }
             if (nd.symbolPointers[nextSymbol] == null) {
                 return false;
@@ -69,7 +69,7 @@ public class StringSetImpl implements StringSet {
             if (Character.isLowerCase(str.charAt(index))) {
                 nextSymbol = str.charAt(index) - 'a';
             } else {
-                nextSymbol = str.charAt(index) - 'A';
+                nextSymbol = str.charAt(index) - 'A' + ALPHABET_SIZE / 2;
             }
             if (nodeRemove(nd.symbolPointers[nextSymbol], index + 1, str)) {
                 if (nd.markedAncestorsNumber-- == 1) {
@@ -95,7 +95,7 @@ public class StringSetImpl implements StringSet {
         if (Character.isLowerCase(str.charAt(index))) {
             nextSymbol = str.charAt(index) - 'a';
         } else {
-            nextSymbol = str.charAt(index) - 'A';
+            nextSymbol = str.charAt(index) - 'A' + ALPHABET_SIZE / 2;
         }
         if (nd.symbolPointers[nextSymbol] == null) {
             return 0;
