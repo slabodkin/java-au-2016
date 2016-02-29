@@ -17,7 +17,11 @@ public class StringSetTest {
         assertTrue(stringSet.add("abc"));
         assertTrue(stringSet.contains("abc"));
         assertEquals(1, stringSet.size());
+        assertTrue(stringSet.add("abd"));
+        assertTrue(stringSet.add("a"));
         assertEquals(1, stringSet.howManyStartsWithPrefix("abc"));
+        assertEquals(2, stringSet.howManyStartsWithPrefix("ab"));
+        assertEquals(3, stringSet.howManyStartsWithPrefix("a"));
     }
 
     public static StringSet instance() {

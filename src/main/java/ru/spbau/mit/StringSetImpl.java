@@ -21,7 +21,12 @@ public class StringSetImpl implements StringSet {
 
     public boolean nodeAdd(Node nd, int index, String str) {
         if (index != str.length()) {
-            int nextSymbol = str.charAt(index) - 'a';
+            int nextSymbol;
+            if (Character.isLowerCase(str.charAt(index))) {
+                nextSymbol = str.charAt(index) - 'a';
+            } else {
+                nextSymbol = str.charAt(index) - 'A';
+            }
             if (nd.symbolPointers[nextSymbol] == null) {
                 nd.symbolPointers[nextSymbol] = new Node();
                 nd.markedAncestorsNumber++;
@@ -44,7 +49,12 @@ public class StringSetImpl implements StringSet {
 
     public boolean nodeContains(Node nd, int index, String str) {
         if (index != str.length()) {
-            int nextSymbol = str.charAt(index) - 'a';
+            int nextSymbol;
+            if (Character.isLowerCase(str.charAt(index))) {
+                nextSymbol = str.charAt(index) - 'a';
+            } else {
+                nextSymbol = str.charAt(index) - 'A';
+            }
             if (nd.symbolPointers[nextSymbol] == null) {
                 return false;
             }
@@ -55,9 +65,11 @@ public class StringSetImpl implements StringSet {
 
     public boolean nodeRemove(Node nd, int index, String str) {
         if (index != str.length()) {
-            int nextSymbol = str.charAt(index) - 'a';
-            if (nd.symbolPointers[nextSymbol] == null) {
-                return false;
+            int nextSymbol;
+            if (Character.isLowerCase(str.charAt(index))) {
+                nextSymbol = str.charAt(index) - 'a';
+            } else {
+                nextSymbol = str.charAt(index) - 'A';
             }
             if (nodeRemove(nd.symbolPointers[nextSymbol], index + 1, str)) {
                 if (nd.markedAncestorsNumber-- == 1) {
@@ -79,7 +91,12 @@ public class StringSetImpl implements StringSet {
         if (index == str.length()) {
             return nd.markedAncestorsNumber;
         }
-        int nextSymbol = str.charAt(index) - 'a';
+        int nextSymbol;
+        if (Character.isLowerCase(str.charAt(index))) {
+            nextSymbol = str.charAt(index) - 'a';
+        } else {
+            nextSymbol = str.charAt(index) - 'A';
+        }
         if (nd.symbolPointers[nextSymbol] == null) {
             return 0;
         }
