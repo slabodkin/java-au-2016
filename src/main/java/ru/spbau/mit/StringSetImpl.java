@@ -6,104 +6,8 @@ package ru.spbau.mit;
 public class StringSetImpl implements StringSet {
 
     private static final int ALPHABET_SIZE = 26 * 2;
+    private final Node root = new Node();
 
-    public static class Node {
-        public Node() {
-            marked = false;
-            markedAncestorsNumber = 0;
-            symbolPointers = new Node[ALPHABET_SIZE];
-        }
-
-        private Node[] symbolPointers;
-        private boolean marked;
-        private int markedAncestorsNumber;
-    }
-
-    public boolean nodeAdd(Node nd, int index, String str) {
-        if (index != str.length()) {
-            int nextSymbol;
-            if (Character.isLowerCase(str.charAt(index))) {
-                nextSymbol = str.charAt(index) - 'a';
-            } else {
-                nextSymbol = str.charAt(index) - 'A' + ALPHABET_SIZE / 2;
-            }
-            if (nd.symbolPointers[nextSymbol] == null) {
-                nd.symbolPointers[nextSymbol] = new Node();
-                nd.markedAncestorsNumber++;
-                boolean tmp = nodeAdd(nd.symbolPointers[nextSymbol], index + 1, str);
-                return true;
-            }
-            if (nodeAdd(nd.symbolPointers[nextSymbol], index + 1, str)) {
-                nd.markedAncestorsNumber++;
-                return true;
-            }
-            return false;
-        }
-        if (!nd.marked) {
-            nd.marked = true;
-            nd.markedAncestorsNumber++;
-            return true;
-        }
-        return false;
-    }
-
-    public boolean nodeContains(Node nd, int index, String str) {
-        if (index != str.length()) {
-            int nextSymbol;
-            if (Character.isLowerCase(str.charAt(index))) {
-                nextSymbol = str.charAt(index) - 'a';
-            } else {
-                nextSymbol = str.charAt(index) - 'A' + ALPHABET_SIZE / 2;
-            }
-            if (nd.symbolPointers[nextSymbol] == null) {
-                return false;
-            }
-            return nodeContains(nd.symbolPointers[nextSymbol], index + 1, str);
-        }
-        return nd.marked;
-    }
-
-    public boolean nodeRemove(Node nd, int index, String str) {
-        if (index != str.length()) {
-            int nextSymbol;
-            if (Character.isLowerCase(str.charAt(index))) {
-                nextSymbol = str.charAt(index) - 'a';
-            } else {
-                nextSymbol = str.charAt(index) - 'A' + ALPHABET_SIZE / 2;
-            }
-            if (nodeRemove(nd.symbolPointers[nextSymbol], index + 1, str)) {
-                if (nd.markedAncestorsNumber-- == 1) {
-                    nd.symbolPointers[nextSymbol] = null;
-                }
-                return true;
-            }
-            return false;
-        }
-        if (nd.marked) {
-            nd.marked = false;
-            nd.markedAncestorsNumber--;
-            return true;
-        }
-        return false;
-    }
-
-    public int nodeHowManyStartsWithPrefix(Node nd, int index, String str) {
-        if (index == str.length()) {
-            return nd.markedAncestorsNumber;
-        }
-        int nextSymbol;
-        if (Character.isLowerCase(str.charAt(index))) {
-            nextSymbol = str.charAt(index) - 'a';
-        } else {
-            nextSymbol = str.charAt(index) - 'A' + ALPHABET_SIZE / 2;
-        }
-        if (nd.symbolPointers[nextSymbol] == null) {
-            return 0;
-        }
-        return nodeHowManyStartsWithPrefix(nd.symbolPointers[nextSymbol], index + 1, str);
-    }
-
-    private Node root = new Node();
 
     public boolean add(String str) {
         return nodeAdd(root, 0, str);
@@ -126,4 +30,90 @@ public class StringSetImpl implements StringSet {
     }
 
 
+    private int getNextSymbolNumber(int index, String str) {
+        if (Character.isLowerCase(str.charAt(index))) {
+            return str.charAt(index) - 'a';
+        } else {
+            return str.charAt(index) - 'A' + ALPHABET_SIZE / 2;
+        }
+    }
+
+    private boolean nodeAdd(Node nd, int index, String str) {
+        if (index != str.length()) {
+            int nextSymbol = getNextSymbolNumber(index, str);
+
+            if (nd.symbolPointers[nextSymbol] == null) {
+                nd.symbolPointers[nextSymbol] = new Node();
+            }
+            if (nodeAdd(nd.symbolPointers[nextSymbol], index + 1, str)) {
+                nd.markedAncestorsNumber++;
+                return true;
+            }
+            return false;
+        }
+        if (!nd.marked) {
+            nd.marked = true;
+            nd.markedAncestorsNumber++;
+            return true;
+        }
+        return false;
+    }
+
+    private boolean nodeContains(Node nd, int index, String str) {
+        if (index != str.length()) {
+            int nextSymbol = getNextSymbolNumber(index, str);
+
+            if (nd.symbolPointers[nextSymbol] == null) {
+                return false;
+            }
+            return nodeContains(nd.symbolPointers[nextSymbol], index + 1, str);
+        }
+        return nd.marked;
+    }
+
+    private boolean nodeRemove(Node nd, int index, String str) {
+        if (index != str.length()) {
+            int nextSymbol = getNextSymbolNumber(index, str);
+
+            if (nodeRemove(nd.symbolPointers[nextSymbol], index + 1, str)) {
+                nd.markedAncestorsNumber--;
+                if (nd.markedAncestorsNumber == 1) {
+                    nd.symbolPointers[nextSymbol] = null;
+                }
+                return true;
+            }
+            return false;
+        }
+        if (nd.marked) {
+            nd.marked = false;
+            nd.markedAncestorsNumber--;
+            return true;
+        }
+        return false;
+    }
+
+    private int nodeHowManyStartsWithPrefix(Node nd, int index, String str) {
+        if (index == str.length()) {
+            return nd.markedAncestorsNumber;
+        }
+        int nextSymbol = getNextSymbolNumber(index, str);
+
+        if (nd.symbolPointers[nextSymbol] == null) {
+            return 0;
+        }
+        return nodeHowManyStartsWithPrefix(nd.symbolPointers[nextSymbol], index + 1, str);
+    }
+
+
+    private static final class Node {
+        private final Node[] symbolPointers;
+        private boolean marked;
+        private int markedAncestorsNumber;
+
+        private Node() {
+            marked = false;
+            markedAncestorsNumber = 0;
+            symbolPointers = new Node[ALPHABET_SIZE];
+        }
+    }
 }
