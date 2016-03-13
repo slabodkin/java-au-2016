@@ -1,9 +1,10 @@
 package ru.spbau.mit;
 
+import java.io.*;
 /**
  * Created by vbv on 29.02.16.
  */
-public class StringSetImpl implements StringSet {
+public class StringSetImpl implements StringSet, StreamSerializable {
 
     private static final int ALPHABET_SIZE = 26 * 2;
     private final Node root = new Node();
@@ -27,6 +28,14 @@ public class StringSetImpl implements StringSet {
 
     public int size() {
         return root.markedAncestorsNumber;
+    }
+
+    public void serialize(OutputStream out) {
+        nodeSerialize(out, root);
+    }
+
+    public void deserialize(InputStream in) {
+        nodeDeserialize(in, root);
     }
 
 
@@ -107,6 +116,42 @@ public class StringSetImpl implements StringSet {
         return nodeHowManyStartsWithPrefix(nd.symbolPointers[nextSymbol], index + 1, str);
     }
 
+    private void nodeSerialize(OutputStream out, Node nd) {
+        try {
+            DataOutputStream dataOut = new DataOutputStream(out);
+            dataOut.writeBoolean(nd.marked);
+            dataOut.writeInt(nd.markedAncestorsNumber);
+            boolean tmp;
+            for (int i = 0; i < ALPHABET_SIZE; i++) {
+                tmp = nd.symbolPointers[i] != null;
+                dataOut.writeBoolean(tmp);
+                if (tmp) {
+                    nodeSerialize(out, nd.symbolPointers[i]);
+                }
+            }
+        } catch (IOException e) {
+            throw new SerializationException();
+        }
+    }
+
+    private void nodeDeserialize(InputStream in, Node nd) {
+        try {
+            DataInputStream dataIn = new DataInputStream(in);
+            nd.marked = dataIn.readBoolean();
+            nd.markedAncestorsNumber = dataIn.readInt();
+            boolean tmp;
+            for (int i = 0; i < ALPHABET_SIZE; i++) {
+                tmp = dataIn.readBoolean();
+                if (tmp) {
+                    nd.symbolPointers[i] = new Node();
+                    nodeDeserialize(in, nd.symbolPointers[i]);
+                }
+            }
+        } catch (IOException e) {
+            throw new SerializationException();
+        }
+
+    }
 
     private static final class Node {
         private final Node[] symbolPointers;
