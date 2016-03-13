@@ -14,12 +14,20 @@ public class StringSetTest {
     public void testSimple() {
 
         StringSet stringSet = instance();
-
-        assertTrue(stringSet.add("abc"));
-        assertTrue(stringSet.contains("abc"));
-        assertEquals(1, stringSet.size());
-        assertTrue(stringSet.remove("abc"));
-        assertFalse(stringSet.remove("abc"));
+        stringSet.add("sa");
+        stringSet.add("sb");
+        stringSet.remove("sa");
+        assertTrue(stringSet.contains("sb"));
+        assertTrue(stringSet.remove("sb"));
+        assertFalse(stringSet.remove("sb"));
+        assertTrue(stringSet.howManyStartsWithPrefix("sb") == 0);
+        assertTrue(stringSet.add("saa"));
+        assertTrue(stringSet.add("sab"));
+        assertTrue(stringSet.howManyStartsWithPrefix("sa") == 2);
+        assertFalse(stringSet.contains("sb"));
+        assertFalse(stringSet.remove("sb"));
+        assertTrue(stringSet.remove("sab"));
+        assertTrue(stringSet.howManyStartsWithPrefix("sa") == 1);
     }
 
     public static StringSet instance() {

@@ -75,9 +75,12 @@ public class StringSetImpl implements StringSet {
         if (index != str.length()) {
             int nextSymbol = getNextSymbolNumber(index, str);
 
+            if (nd.symbolPointers[nextSymbol] == null) {
+                return false;
+            }
             if (nodeRemove(nd.symbolPointers[nextSymbol], index + 1, str)) {
                 nd.markedAncestorsNumber--;
-                if (nd.markedAncestorsNumber == 1) {
+                if (nd.markedAncestorsNumber == 0) {
                     nd.symbolPointers[nextSymbol] = null;
                 }
                 return true;
