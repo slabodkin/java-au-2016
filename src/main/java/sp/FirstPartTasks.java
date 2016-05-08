@@ -18,36 +18,35 @@ public final class FirstPartTasks {
 
     // Список названий альбомов, отсортированный лексикографически по названию
     public static List<String> allNamesSorted(Stream<Album> albums) {
-        List<String> res = albums
+        return albums
                 .map(Album::getName)
+                .sorted()
                 .collect(Collectors.toList());
-        Collections.sort(res);
-        return res;
     }
 
     // Список треков, отсортированный лексикографически по названию, включающий все треки альбомов из 'albums'
     public static List<String> allTracksSorted(Stream<Album> albums) {
-        List<String> res = albums
+        return albums
                 .flatMap(someAlbum -> someAlbum
                         .getTracks()
                         .stream())
                 .map(Track::getName)
+                .sorted()
                 .collect(Collectors.toList());
-        Collections.sort(res);
-        return res;
     }
 
     // Список альбомов, в которых есть хотя бы один трек с рейтингом более 95, отсортированный по названию
     public static List<Album> sortedFavorites(Stream<Album> s) {
         final int threshold = 95;
-        List<Album> res = s
+        //List<Album> res =
+        //Collections.sort(res, Comparator.comparing(Album::getName));
+        return s
                 .filter(someAlbum -> someAlbum
                         .getTracks()
                         .stream()
                         .anyMatch(someTrack -> someTrack.getRating() > threshold))
+                .sorted(Comparator.comparing(Album::getName))
                 .collect(Collectors.toList());
-        Collections.sort(res, Comparator.comparing(Album::getName));
-        return res;
     }
 
     // Сгруппировать альбомы по артистам
@@ -59,8 +58,7 @@ public final class FirstPartTasks {
     public static Map<Artist, List<String>> groupByArtistMapName(Stream<Album> albums) {
         return albums.collect(Collectors.groupingBy(
                 Album::getArtist,
-                //Collectors.mapping(Album::getName, Collectors.toList())));
-                Collectors.mapping(someArtist -> someArtist.getName(), Collectors.toList())));
+                Collectors.mapping(Album::getName, Collectors.toList())));
     }
 
     // Число повторяющихся альбомов в потоке
@@ -88,15 +86,14 @@ public final class FirstPartTasks {
 
     // Список альбомов, отсортированный по убыванию среднего рейтинга его треков (0, если треков нет)
     public static List<Album> sortByAverageRating(Stream<Album> albums) {
-        List<Album> res = albums.collect(Collectors.toList());
-        Collections.sort(res, Comparator.comparing(someAlbum -> someAlbum
-                .getTracks()
-                .stream()
-                .mapToInt(someTrack -> someTrack.getRating())
-                .average()
-                .orElse(0)));
-        Collections.reverse(res);
-        return res;
+        return albums
+                .sorted(Comparator.comparing(someAlbum -> someAlbum
+                        .getTracks()
+                        .stream()
+                        .mapToInt(someTrack -> someTrack.getRating())
+                        .average()
+                        .orElse(0), Comparator.reverseOrder()))
+                .collect(Collectors.toList());
     }
 
     // Произведение всех чисел потока по модулю 'modulo'
@@ -108,15 +105,7 @@ public final class FirstPartTasks {
     // Вернуть строку, состояющую из конкатенаций переданного массива, и окруженную строками "<", ">"
     // см. тесты
     public static String joinTo(String... strings) {
-        StringBuilder s = new StringBuilder();
-        s.append("<");
-        String tempstr = Arrays.asList(strings)
-                .stream()
-                .reduce((a, b) -> a + ", " + b)
-                .orElse("");
-        s.append(tempstr);
-        s.append(">");
-        return s.toString();
+        return Arrays.stream(strings).collect(Collectors.joining(", ", "<", ">"));
     }
 
     // Вернуть поток из объектов класса 'clazz'

@@ -19,13 +19,11 @@ public final class SecondPartTasks {
         return paths
                 .stream()
                 .flatMap(somePath -> {
-                    Stream<String> toFilter = null;
                     try {
-                        toFilter = Files.lines(Paths.get(somePath));
+                        return Files.lines(Paths.get(somePath));
                     } catch (IOException e) {
-                        toFilter = Stream.empty();
+                        return Stream.empty();
                     }
-                    return toFilter;
                 })
                 .filter(str -> str.contains(sequence))
                 .collect(Collectors.toList());
@@ -42,10 +40,10 @@ public final class SecondPartTasks {
         final double zeroPointFive = 0.5;
         return Stream
                 .generate(() -> {
-            double xCoord = r.nextDouble();
-            double yCoord = r.nextDouble();
-            return Math.sqrt(((xCoord - zeroPointFive) * (xCoord - zeroPointFive))
-                    + ((yCoord - zeroPointFive) * (yCoord - zeroPointFive)));
+            double xCoord = r.nextDouble() - zeroPointFive;
+            double yCoord = r.nextDouble() - zeroPointFive;
+            return Math.sqrt(xCoord * xCoord
+                    + yCoord * yCoord);
         })
                 .limit(maxIterationNumber)
                 .mapToDouble(shootDistance -> {
@@ -66,7 +64,7 @@ public final class SecondPartTasks {
                 .stream()
                 .collect(Collectors.toMap(
                         Map.Entry::getKey,
-                        (Map.Entry<String, List<String>> entry) -> entry
+                        entry -> entry
                                 .getValue()
                                 .stream()
                                 .mapToInt(str -> str.length())

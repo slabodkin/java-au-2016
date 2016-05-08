@@ -31,7 +31,7 @@ public class SecondPartTasksTest {
     @Test
     public void testPiDividedBy4() {
         final double answer = Math.PI / 4;
-        assertTrue(Math.abs(answer - piDividedBy4()) < 0.01);
+        assertEquals(answer, piDividedBy4(), 0.01);
     }
 
     @Test
@@ -41,7 +41,7 @@ public class SecondPartTasksTest {
                 Arrays.asList("src/test/resources/thick_as_a_brick.txt"), " "));
         compositions.put("Rolling Stones", findQuotes(
                 Arrays.asList("src/test/resources/paint_it_black.txt"), " "));
-        assertEquals(findPrinter(compositions), "Jethro Tull");
+        assertEquals("Jethro Tull", findPrinter(compositions));
     }
 
     @Test
@@ -60,6 +60,6 @@ public class SecondPartTasksTest {
         ordersSum.put("HTC One M10", 1);
         ordersSum.put("Samsung Galaxy s7", 5);
         ordersSum.put("iPhone 7", 6);
-        assertEquals(calculateGlobalOrder(orders), ordersSum);
+        assertEquals(ordersSum, calculateGlobalOrder(orders));
     }
 }
