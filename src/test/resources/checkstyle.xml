@@ -47,7 +47,6 @@
 
     <!-- Checks whether files end with a new line.                        -->
     <!-- See http://checkstyle.sf.net/config_misc.html#NewlineAtEndOfFile -->
-    <module name="NewlineAtEndOfFile"/>
 
     <!-- Checks that property files contain the same keys.         -->
     <!-- See http://checkstyle.sf.net/config_misc.html#Translation -->
@@ -148,7 +147,6 @@
 
         <!-- Checks for common coding problems               -->
         <!-- See http://checkstyle.sf.net/config_coding.html -->
-        <module name="AvoidInlineConditionals"/>
         <module name="EmptyStatement"/>
         <module name="EqualsHashCode"/>
         <!--<module name="HiddenField"/>-->
@@ -174,6 +172,20 @@
         <module name="TodoComment"/>
         <module name="UpperEll"/>
 
+        <module name="VariableDeclarationUsageDistance"/>
+        <module name="OneStatementPerLine"/>
+
+        <module name="NestedIfDepth">
+            <property name="max" value="3"/>
+        </module>
+
+        <module name="NestedForDepth">
+            <property name="max" value="3"/>
+        </module>
+
+        <module name="MultipleVariableDeclarations"/>
+
+        <module name="DeclarationOrder"/>
     </module>
 
 </module>
